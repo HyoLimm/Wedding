@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>최효림 ♡ 음소라 결혼합니다</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Pinyon+Script&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #faf8f4;
+  --warm-white: #fffefb;
+  --snow: #f4f2ee;
+  --blush: #e8ddd4;
+  --warm-gray: #c8bfb4;
+  --gold: #c4a882;
+  --dark-gold: #9a7d5a;
+  --text-dark: #2e2a26;
+  --text-mid: #6b5f54;
+  --text-light: #a09488;
+  --pine: #7a8c72;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--cream); color: var(--text-dark); font-family: 'Noto Serif KR', serif; overflow-x: hidden; }
+
+#snow-canvas { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events: none; z-index: 999; }
+
+.intro-overlay {
+  position: fixed; inset:0; background: var(--warm-white);
+  z-index: 1000; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 20px;
+  animation: overlayOut 0.8s ease 2.4s forwards;
+}
+.intro-ring {
+  width: 72px; height: 72px; border-radius: 50%;
+  border: 1.5px solid var(--warm-gray);
+  display: flex; align-items: center; justify-content: center;
+  animation: ringPulse 2s ease infinite;
+}
+.intro-ring svg { width: 32px; }
+.intro-label { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; letter-spacing: 0.3em; color: var(--text-light); animation: fadeInUp 0.8s ease 0.3s both; }
+@keyframes ringPulse { 0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(196,168,130,0.3); } 50% { transform: scale(1.05); box-shadow: 0 0 0 12px rgba(196,168,130,0); } }
+@keyframes overlayOut { to { opacity:0; pointer-events:none; } }
+
+.hero {
+  min-height: 100svh;
+  background: linear-gradient(175deg, #fefcf8 0%, #f7f3ec 35%, #f0ebe1 70%, #e8e1d5 100%);
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 80px 24px;
+  opacity: 0; animation: pageIn 1s ease 2.8s forwards;
+}
+.hero-bg-deco { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.snowflake-deco { position: absolute; opacity: 0.06; animation: slowRotate linear infinite; }
+@keyframes slowRotate { to { transform: rotate(360deg); } }
+
+.branch { position: absolute; pointer-events: none; }
+.branch-tl { top: 0; left: 0; }
+.branch-tr { top: 0; right: 0; transform: scaleX(-1); }
+.branch-bl { bottom: 0; left: 0; transform: scaleY(-1); }
+.branch-br { bottom: 0; right: 0; transform: scale(-1); }
+.branch svg { width: clamp(120px, 22vw, 220px); display: block; }
+
+.hero-content { position: relative; z-index: 1; text-align: center; opacity: 0; animation: fadeInUp 1s ease 3.2s forwards; }
+.hero-date-top { font-family: 'Cormorant Garamond', serif; font-size: clamp(11px, 1.8vw, 14px); letter-spacing: 0.45em; color: var(--text-light); text-transform: uppercase; margin-bottom: 28px; }
+.hero-script { font-family: 'Pinyon Script', cursive; font-size: clamp(64px, 16vw, 130px); color: var(--text-dark); line-height: 0.95; opacity: 0; animation: fadeInUp 0.9s ease 3.5s forwards; }
+.hero-script .amp { color: var(--gold); font-size: 0.75em; display: inline-block; margin: 0 4px; }
+.hero-kr-names { font-size: clamp(20px, 4vw, 30px); font-weight: 300; letter-spacing: 0.25em; color: var(--text-mid); margin-top: 20px; opacity: 0; animation: fadeInUp 0.9s ease 3.7s forwards; }
+.hero-kr-names b { font-weight: 600; color: var(--text-dark); }
+
+.ornament { display: flex; align-items: center; justify-content: center; gap: 16px; margin: 28px auto; opacity: 0; animation: fadeInUp 0.8s ease 3.9s forwards; }
+.ornament-line { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--warm-gray)); }
+.ornament-line.r { transform: scaleX(-1); }
+.ornament svg { width: 20px; }
+
+.hero-wedding-info { opacity: 0; animation: fadeInUp 0.9s ease 4s forwards; }
+.hero-date-main { font-family: 'Cormorant Garamond', serif; font-size: clamp(17px, 3vw, 24px); letter-spacing: 0.1em; color: var(--text-dark); margin-bottom: 8px; }
+.hero-date-main strong { color: var(--dark-gold); }
+.hero-venue-text { font-size: clamp(12px, 1.8vw, 14px); color: var(--text-light); letter-spacing: 0.15em; line-height: 1.9; }
+
+.scroll-hint { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: fadeInUp 0.8s ease 4.5s forwards; }
+.scroll-hint span { font-size: 10px; letter-spacing: 0.3em; color: var(--text-light); text-transform: uppercase; }
+.scroll-mouse { width: 22px; height: 34px; border-radius: 11px; border: 1.5px solid var(--warm-gray); display: flex; justify-content: center; padding-top: 5px; }
+.scroll-mouse::after { content: ''; width: 3px; height: 7px; background: var(--warm-gray); border-radius: 2px; animation: scrollBounce 1.5s ease infinite; }
+@keyframes scrollBounce { 0%,100% { transform: translateY(0); opacity:1; } 50% { transform: translateY(5px); opacity:0.4; } }
+
+section { padding: 80px 24px; }
+.sec-label { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(12px, 1.8vw, 14px); letter-spacing: 0.4em; color: var(--gold); text-transform: uppercase; display: block; text-align: center; margin-bottom: 40px; }
+
+.dday-sec { background: var(--warm-white); border-top: 1px solid rgba(200,191,180,0.4); border-bottom: 1px solid rgba(200,191,180,0.4); text-align: center; }
+.dday-wrap { display: flex; justify-content: center; align-items: flex-end; gap: clamp(16px, 5vw, 56px); flex-wrap: wrap; }
+.dday-block { text-align: center; }
+.dday-num { font-family: 'Cormorant Garamond', serif; font-size: clamp(52px, 12vw, 88px); font-weight: 300; line-height: 1; color: var(--text-dark); }
+.dday-unit { font-size: 10px; letter-spacing: 0.3em; color: var(--text-light); text-transform: uppercase; margin-top: 4px; }
+.dday-dot { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px,6vw,52px); color: var(--blush); margin-bottom: 20px; }
+
+.greeting-sec { background: linear-gradient(180deg, var(--warm-white), var(--snow)); text-align: center; }
+.greeting-snowflake { margin: 0 auto 32px; display: block; width: 48px; opacity: 0.5; }
+.greeting-text { font-size: clamp(14px, 2.2vw, 17px); line-height: 2.6; color: var(--text-mid); max-width: 500px; margin: 0 auto; font-weight: 300; }
+.greeting-text em { font-style: normal; color: var(--dark-gold); }
+
+.gallery-sec { background: var(--snow); text-align: center; }
+.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: auto auto; gap: 10px; max-width: 680px; margin: 0 auto; }
+.g-item { border-radius: 4px; overflow: hidden; position: relative; background: linear-gradient(135deg, #ede8e0, #ddd6cc); cursor: pointer; transition: transform 0.35s ease, box-shadow 0.35s ease; }
+.g-item:hover { transform: scale(1.03); box-shadow: 0 10px 28px rgba(60,50,40,0.12); }
+.g-item.tall { grid-row: span 2; }
+.g-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.g-placeholder { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: rgba(100,85,70,0.4); }
+.g-item.tall .g-placeholder { aspect-ratio: unset; min-height: 300px; }
+.g-placeholder svg { width: 26px; }
+.g-placeholder span { font-size: 10px; letter-spacing: 0.2em; }
+.gallery-note { margin-top: 18px; font-size: 12px; color: var(--text-light); }
+
+.map-sec { background: var(--warm-white); text-align: center; }
+.venue-cards { display: flex; flex-direction: column; gap: 12px; max-width: 580px; margin: 0 auto 28px; }
+.venue-card { display: flex; align-items: flex-start; gap: 14px; background: var(--cream); border-radius: 10px; padding: 18px 22px; border-left: 3px solid var(--gold); text-align: left; }
+.venue-card svg { width: 18px; flex-shrink: 0; margin-top: 3px; }
+.venue-card-body strong { display: block; font-size: 15px; color: var(--text-dark); margin-bottom: 4px; }
+.venue-card-body p { font-size: 13px; color: var(--text-mid); line-height: 1.8; }
+.map-box { max-width: 580px; margin: 0 auto; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(80,60,40,0.1); }
+.map-placeholder { width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, #e8e1d6, #d8d0c4); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--text-light); }
+.map-placeholder svg { width: 32px; }
+.map-placeholder p { font-size: 13px; letter-spacing: 0.1em; }
+.map-placeholder small { font-size: 11px; opacity: 0.6; }
+
+.account-sec { background: linear-gradient(160deg, #f5f0e8, #ede6da); text-align: center; }
+.account-desc { font-size: 13px; color: var(--text-light); letter-spacing: 0.08em; margin-bottom: 36px; }
+.account-wrap { display: flex; gap: 16px; max-width: 560px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+.hero-parents {
+  font-size: clamp(12px, 1.8vw, 14px); color: var(--text-light);
+  letter-spacing: 0.1em; margin-top: 12px; line-height: 2;
+  display: flex; align-items: center; justify-content: center;
+  gap: 12px; flex-wrap: wrap;
+  opacity: 0; animation: fadeInUp 0.9s ease 3.85s forwards;
+}
+.parents-sep { color: var(--warm-gray); font-size: 12px; }
+.parents-bride { display: flex; align-items: center; gap: 5px; }
+.chrysanthemum { width: 18px; height: 18px; flex-shrink: 0; vertical-align: middle; }
+
+/* 계좌 그룹 */
+.acc-group { max-width: 620px; margin: 0 auto; }
+.acc-group-title {
+  font-size: 11px; letter-spacing: 0.3em; color: var(--text-light);
+  text-transform: uppercase; text-align: center;
+  margin: 32px 0 14px; position: relative;
+}
+.acc-group-title::before, .acc-group-title::after {
+  content: ''; position: absolute; top: 50%;
+  width: 30%; height: 1px; background: rgba(196,168,130,0.3);
+}
+.acc-group-title::before { left: 0; }
+.acc-group-title::after { right: 0; }
+.acc-group-title:first-child { margin-top: 0; }
+.acc-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.acc-card-sm {
+  flex: 1; min-width: 160px; max-width: 220px;
+  background: rgba(255,254,251,0.9);
+  border-radius: 12px; padding: 22px 18px;
+  border: 1px solid rgba(196,168,130,0.22);
+  box-shadow: 0 3px 14px rgba(80,60,40,0.06);
+  text-align: center;
+}
+.acc-card-sm.memorial {
+  border-color: rgba(180,170,140,0.35);
+  background: rgba(250,248,240,0.95);
+}
+.acc-card-sm .chrysanthemum-sm {
+  width: 22px; height: 22px; margin: 0 auto 8px; display: block;
+}
+.acc-card-sm .acc-role { font-size: 10px; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+.acc-card-sm .acc-role.memorial-role { color: #a09070; }
+.acc-card-sm .acc-name { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.acc-card-sm .acc-bank { font-size: 11px; color: var(--text-light); margin-bottom: 8px; }
+.acc-card-sm .acc-num { font-family: 'Cormorant Garamond', serif; font-size: 15px; letter-spacing: 0.05em; color: var(--text-mid); }
+.acc-card-sm .copy-btn { margin-top: 12px; padding: 7px 16px; font-size: 10px; }
+
+.acc-card { flex: 1; min-width: 220px; background: rgba(255,254,251,0.9); border-radius: 14px; padding: 30px 24px; border: 1px solid rgba(196,168,130,0.25); box-shadow: 0 4px 20px rgba(80,60,40,0.07); }
+.acc-role { font-size: 10px; letter-spacing: 0.35em; color: var(--gold); text-transform: uppercase; margin-bottom: 14px; }
+.acc-name { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+.acc-bank { font-size: 12px; color: var(--text-light); margin-bottom: 10px; }
+.acc-num { font-family: 'Cormorant Garamond', serif; font-size: 19px; letter-spacing: 0.06em; color: var(--text-mid); }
+.copy-btn { display: inline-block; margin-top: 18px; padding: 9px 22px; border: 1px solid var(--gold); border-radius: 50px; font-size: 11px; letter-spacing: 0.22em; color: var(--dark-gold); cursor: pointer; transition: all 0.25s; background: transparent; font-family: 'Noto Serif KR', serif; }
+.copy-btn:hover { background: var(--dark-gold); color: #fff; border-color: var(--dark-gold); }
+.copy-btn.done { background: var(--pine); border-color: var(--pine); color: #fff; }
+
+footer { background: var(--text-dark); padding: 70px 24px; text-align: center; position: relative; overflow: hidden; }
+footer::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M30 5L30 55M5 30L55 30M12 12L48 48M48 12L12 48'/%3E%3C/g%3E%3C/svg%3E"); }
+.footer-script { font-family: 'Pinyon Script', cursive; font-size: clamp(36px, 8vw, 60px); color: var(--blush); position: relative; }
+.footer-sub { font-size: 11px; letter-spacing: 0.3em; color: rgba(255,255,255,0.3); margin-top: 16px; position: relative; text-transform: uppercase; }
+
+.reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.9s ease, transform 0.9s ease; }
+.reveal.vis { opacity: 1; transform: translateY(0); }
+
+@keyframes fadeInUp { from { opacity:0; transform: translateY(18px); } to { opacity:1; transform: translateY(0); } }
+@keyframes pageIn { to { opacity:1; } }
+
+/* ── 음악 플레이어 버튼 ── */
+.music-btn {
+  position: fixed; bottom: 28px; right: 28px;
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(255,254,251,0.92);
+  border: 1.5px solid var(--gold);
+  box-shadow: 0 4px 16px rgba(80,60,40,0.15);
+  cursor: pointer; z-index: 998;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+.music-btn:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(80,60,40,0.2); }
+.music-btn svg { width: 20px; }
+.music-btn .note-icon { display: block; }
+.music-btn .pause-icon { display: none; }
+.music-btn.playing .note-icon { display: none; }
+.music-btn.playing .pause-icon { display: block; }
+
+/* 음표 회전 애니메이션 */
+.music-btn.playing { animation: musicPulse 2s ease infinite; }
+@keyframes musicPulse {
+  0%,100% { box-shadow: 0 4px 16px rgba(196,168,130,0.3); }
+  50% { box-shadow: 0 4px 24px rgba(196,168,130,0.6); }
+}
+
+.music-label {
+  position: fixed; bottom: 28px; right: 84px;
+  background: rgba(255,254,251,0.92); backdrop-filter: blur(8px);
+  border: 1px solid rgba(196,168,130,0.4); border-radius: 50px;
+  padding: 8px 16px; font-size: 11px; letter-spacing: 0.15em;
+  color: var(--text-mid); white-space: nowrap;
+  z-index: 997; opacity: 0; pointer-events: none;
+  transform: translateX(8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.music-label.show { opacity: 1; transform: translateX(0); }
+
+@media(max-width: 480px) {
+  .gallery-grid { grid-template-columns: repeat(2,1fr); }
+  .g-item.tall { grid-row: span 1; }
+  .dday-dot { display: none; }
+  .acc-card { min-width: 180px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="snow-canvas"></canvas>
+
+<!-- 배경음악 -->
+<audio id="bgm" loop preload="auto">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<!-- 음악 토글 버튼 -->
+<div class="music-label" id="musicLabel">🎵 배경음악</div>
+<button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="배경음악 재생/정지">
+  <!-- 음표 아이콘 (정지 상태) -->
+  <svg class="note-icon" viewBox="0 0 24 24" fill="none" stroke="#c4a882" stroke-width="1.8">
+    <path d="M9 18V5l12-2v13"/>
+    <circle cx="6" cy="18" r="3"/>
+    <circle cx="18" cy="16" r="3"/>
+  </svg>
+  <!-- 일시정지 아이콘 (재생 상태) -->
+  <svg class="pause-icon" viewBox="0 0 24 24" fill="none" stroke="#c4a882" stroke-width="1.8">
+    <rect x="6" y="4" width="4" height="16" rx="1"/>
+    <rect x="14" y="4" width="4" height="16" rx="1"/>
+  </svg>
+</button>
+
+<div class="intro-overlay">
+  <div class="intro-ring">
+    <svg viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="20" r="18" stroke="#c8bfb4" stroke-width="1"/>
+      <path d="M20 8 L20 32 M8 20 L32 20 M11.7 11.7 L28.3 28.3 M28.3 11.7 L11.7 28.3" stroke="#c4a882" stroke-width="1" opacity="0.7"/>
+      <circle cx="20" cy="20" r="3" fill="#c4a882"/>
+    </svg>
+  </div>
+  <p class="intro-label">December 5, 2026</p>
+</div>
+
+<!-- 히어로 -->
+<section class="hero">
+  <div class="hero-bg-deco">
+    <svg class="snowflake-deco" style="width:400px;top:-80px;left:-100px;animation-duration:80s;" viewBox="0 0 200 200">
+      <line x1="100" y1="10" x2="100" y2="190" stroke="#6b5f54" stroke-width="2"/>
+      <line x1="10" y1="100" x2="190" y2="100" stroke="#6b5f54" stroke-width="2"/>
+      <line x1="29" y1="29" x2="171" y2="171" stroke="#6b5f54" stroke-width="2"/>
+      <line x1="171" y1="29" x2="29" y2="171" stroke="#6b5f54" stroke-width="2"/>
+    </svg>
+    <svg class="snowflake-deco" style="width:280px;bottom:40px;right:-60px;animation-duration:60s;" viewBox="0 0 200 200">
+      <line x1="100" y1="10" x2="100" y2="190" stroke="#6b5f54" stroke-width="2"/>
+      <line x1="10" y1="100" x2="190" y2="100" stroke="#6b5f54" stroke-width="2"/>
+      <line x1="29" y1="29" x2="171" y2="171" stroke="#6b5f54" stroke-width="2"/>
+      <line x1="171" y1="29" x2="29" y2="171" stroke="#6b5f54" stroke-width="2"/>
+    </svg>
+  </div>
+
+  <div class="branch branch-tl">
+    <svg viewBox="0 0 180 180" fill="none">
+      <path d="M0,0 C20,40 60,80 180,140" stroke="#9aaa8a" stroke-width="1.5" opacity="0.35"/>
+      <path d="M0,0 C10,20 30,35 80,50" stroke="#9aaa8a" stroke-width="1" opacity="0.3"/>
+      <path d="M30,0 C35,15 45,25 90,40" stroke="#9aaa8a" stroke-width="1" opacity="0.25"/>
+      <circle cx="80" cy="50" r="2.5" fill="white" opacity="0.7"/>
+      <circle cx="48" cy="30" r="2" fill="white" opacity="0.6"/>
+      <circle cx="120" cy="90" r="3" fill="white" opacity="0.5"/>
+      <circle cx="160" cy="128" r="2" fill="white" opacity="0.4"/>
+    </svg>
+  </div>
+  <div class="branch branch-tr">
+    <svg viewBox="0 0 180 180" fill="none">
+      <path d="M0,0 C20,40 60,80 180,140" stroke="#9aaa8a" stroke-width="1.5" opacity="0.35"/>
+      <path d="M0,0 C10,20 30,35 80,50" stroke="#9aaa8a" stroke-width="1" opacity="0.3"/>
+      <circle cx="80" cy="50" r="2.5" fill="white" opacity="0.7"/>
+      <circle cx="120" cy="90" r="3" fill="white" opacity="0.5"/>
+    </svg>
+  </div>
+  <div class="branch branch-bl">
+    <svg viewBox="0 0 180 180" fill="none">
+      <path d="M0,0 C20,40 60,80 180,140" stroke="#9aaa8a" stroke-width="1.5" opacity="0.3"/>
+      <circle cx="80" cy="50" r="2.5" fill="white" opacity="0.6"/>
+      <circle cx="160" cy="128" r="2" fill="white" opacity="0.4"/>
+    </svg>
+  </div>
+  <div class="branch branch-br">
+    <svg viewBox="0 0 180 180" fill="none">
+      <path d="M0,0 C20,40 60,80 180,140" stroke="#9aaa8a" stroke-width="1.5" opacity="0.3"/>
+      <circle cx="80" cy="50" r="2.5" fill="white" opacity="0.6"/>
+      <circle cx="120" cy="90" r="3" fill="white" opacity="0.45"/>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <p class="hero-date-top">2026 · 12 · 05 &nbsp;·&nbsp; Saturday</p>
+    <div class="hero-script">Hyorim<span class="amp"> &amp; </span>Sora</div>
+    <p class="hero-kr-names"><b>최효림</b> &nbsp;♡&nbsp; <b>음소라</b></p>
+    <p class="hero-parents">
+      <span class="parents-groom">최낙민 · 김석임의 아들</span>
+      <span class="parents-sep">＆</span>
+      <span class="parents-bride">
+        <svg class="chrysanthemum" viewBox="0 0 20 20" fill="none" title="故 음영태">
+          <circle cx="10" cy="10" r="3" fill="#d4c8a8"/>
+          <ellipse cx="10" cy="4" rx="2.2" ry="3.5" fill="#e8e0c4" opacity="0.9"/>
+          <ellipse cx="10" cy="16" rx="2.2" ry="3.5" fill="#e8e0c4" opacity="0.9"/>
+          <ellipse cx="4" cy="10" rx="3.5" ry="2.2" fill="#e0d8bc" opacity="0.85"/>
+          <ellipse cx="16" cy="10" rx="3.5" ry="2.2" fill="#e0d8bc" opacity="0.85"/>
+          <ellipse cx="5.8" cy="5.8" rx="2.2" ry="3.5" fill="#e8e0c4" opacity="0.8" transform="rotate(45 5.8 5.8)"/>
+          <ellipse cx="14.2" cy="5.8" rx="2.2" ry="3.5" fill="#e8e0c4" opacity="0.8" transform="rotate(-45 14.2 5.8)"/>
+          <ellipse cx="5.8" cy="14.2" rx="2.2" ry="3.5" fill="#e0d8bc" opacity="0.8" transform="rotate(-45 5.8 14.2)"/>
+          <ellipse cx="14.2" cy="14.2" rx="2.2" ry="3.5" fill="#e0d8bc" opacity="0.8" transform="rotate(45 14.2 14.2)"/>
+          <circle cx="10" cy="10" r="2.5" fill="#c8b87a"/>
+        </svg>
+        故 음영태 · 정연화의 딸
+      </span>
+    </p>
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 2 L12 22 M2 12 L22 12 M4.9 4.9 L19.1 19.1 M19.1 4.9 L4.9 19.1" stroke="#c4a882" stroke-width="1.2"/>
+        <circle cx="12" cy="12" r="3" fill="none" stroke="#c4a882" stroke-width="1"/>
+      </svg>
+      <div class="ornament-line r"></div>
+    </div>
+    <div class="hero-wedding-info">
+      <p class="hero-date-main"><strong>2026년 12월 5일 토요일</strong> 오후 1시 30분</p>
+      <p class="hero-venue-text">월드컵컨벤션 그랜드볼룸<br>서울특별시 마포구 월드컵로 240</p>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-mouse"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- D-day -->
+<section class="dday-sec reveal">
+  <span class="sec-label">Until Our Day</span>
+  <div class="dday-wrap">
+    <div class="dday-block"><div class="dday-num" id="d-d">--</div><div class="dday-unit">Days</div></div>
+    <div class="dday-dot">·</div>
+    <div class="dday-block"><div class="dday-num" id="d-h">--</div><div class="dday-unit">Hours</div></div>
+    <div class="dday-dot">·</div>
+    <div class="dday-block"><div class="dday-num" id="d-m">--</div><div class="dday-unit">Minutes</div></div>
+    <div class="dday-dot">·</div>
+    <div class="dday-block"><div class="dday-num" id="d-s">--</div><div class="dday-unit">Seconds</div></div>
+  </div>
+</section>
+
+<!-- 인사말 -->
+<section class="greeting-sec reveal">
+  <svg class="greeting-snowflake" viewBox="0 0 60 60" fill="none">
+    <line x1="30" y1="4" x2="30" y2="56" stroke="#c4a882" stroke-width="1.5"/>
+    <line x1="4" y1="30" x2="56" y2="30" stroke="#c4a882" stroke-width="1.5"/>
+    <line x1="11.5" y1="11.5" x2="48.5" y2="48.5" stroke="#c4a882" stroke-width="1.5"/>
+    <line x1="48.5" y1="11.5" x2="11.5" y2="48.5" stroke="#c4a882" stroke-width="1.5"/>
+    <circle cx="30" cy="30" r="4" fill="none" stroke="#c4a882" stroke-width="1.2"/>
+    <circle cx="30" cy="4" r="2" fill="#c4a882"/><circle cx="30" cy="56" r="2" fill="#c4a882"/>
+    <circle cx="4" cy="30" r="2" fill="#c4a882"/><circle cx="56" cy="30" r="2" fill="#c4a882"/>
+    <circle cx="11.5" cy="11.5" r="2" fill="#c4a882"/><circle cx="48.5" cy="48.5" r="2" fill="#c4a882"/>
+    <circle cx="48.5" cy="11.5" r="2" fill="#c4a882"/><circle cx="11.5" cy="48.5" r="2" fill="#c4a882"/>
+  </svg>
+  <span class="sec-label">Invitation</span>
+  <p class="greeting-text">
+    하얀 눈이 내리는 12월의 어느 날,<br>
+    두 사람이 <em>평생의 약속</em>을 나누려 합니다.<br><br>
+    함께해 온 시간들처럼,<br>
+    앞으로도 나란히 걸어갈 <em>최효림</em>과 <em>음소라</em>의<br>
+    설레는 첫날에 함께해 주세요.<br><br>
+    소중한 발걸음으로 축복해 주신다면<br>
+    더없는 기쁨이 되겠습니다.
+  </p>
+</section>
+
+<!-- 갤러리 -->
+<section class="gallery-sec reveal">
+  <span class="sec-label">Our Story</span>
+  <div class="gallery-grid">
+    <div class="g-item tall">
+      <div class="g-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>PHOTO</span>
+      </div>
+    </div>
+    <div class="g-item"><div class="g-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div></div>
+    <div class="g-item"><div class="g-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div></div>
+    <div class="g-item"><div class="g-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div></div>
+    <div class="g-item"><div class="g-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div></div>
+  </div>
+  <p class="gallery-note">웨딩 사진으로 교체해 주세요 📷</p>
+</section>
+
+<!-- 지도 -->
+<section class="map-sec reveal">
+  <span class="sec-label">Location</span>
+  <div class="venue-cards">
+    <div class="venue-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#c4a882" stroke-width="1.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+      <div class="venue-card-body">
+        <strong>월드컵컨벤션 그랜드볼룸</strong>
+        <p>서울특별시 마포구 월드컵로 240 (상암동)</p>
+      </div>
+    </div>
+    <div class="venue-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#c4a882" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <div class="venue-card-body">
+        <strong>대중교통</strong>
+        <p>지하철 6호선 월드컵경기장역 1번 출구 도보 5분<br>버스 271, 571, 710 · 월드컵경기장 하차</p>
+      </div>
+    </div>
+    <div class="venue-card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#c4a882" stroke-width="1.5"><rect x="1" y="3" width="22" height="14" rx="2"/><path d="M16 21l-4-4-4 4"/></svg>
+      <div class="venue-card-body">
+        <strong>주차 안내</strong>
+        <p>월드컵경기장 주차장 이용 가능 · 예식 당일 3시간 무료</p>
+      </div>
+    </div>
+  </div>
+  <div class="map-box">
+    <div class="map-placeholder">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+      <p>카카오맵 API를 여기에 삽입하세요</p>
+      <small>kakao.maps.Map으로 교체 가능</small>
+    </div>
+  </div>
+</section>
+
+<!-- 계좌번호 -->
+<section class="account-sec reveal">
+  <span class="sec-label">마음 전하기</span>
+  <p class="account-desc">따뜻한 마음을 전해주실 분들을 위해 계좌번호를 안내드립니다</p>
+
+  <div class="acc-group">
+    <!-- 신랑측 -->
+    <p class="acc-group-title">신랑 측</p>
+    <div class="acc-row">
+      <div class="acc-card-sm">
+        <p class="acc-role">신랑</p>
+        <p class="acc-name">최효림</p>
+        <p class="acc-bank">은행명 · 예금주명</p>
+        <p class="acc-num">000 - 0000 - 000000</p>
+        <button class="copy-btn" onclick="copyNum(this,'000-0000-000000')">복사하기</button>
+      </div>
+      <div class="acc-card-sm">
+        <p class="acc-role">아버지</p>
+        <p class="acc-name">최낙민</p>
+        <p class="acc-bank">은행명 · 예금주명</p>
+        <p class="acc-num">000 - 0000 - 000000</p>
+        <button class="copy-btn" onclick="copyNum(this,'000-0000-000000')">복사하기</button>
+      </div>
+      <div class="acc-card-sm">
+        <p class="acc-role">어머니</p>
+        <p class="acc-name">김석임</p>
+        <p class="acc-bank">은행명 · 예금주명</p>
+        <p class="acc-num">000 - 0000 - 000000</p>
+        <button class="copy-btn" onclick="copyNum(this,'000-0000-000000')">복사하기</button>
+      </div>
+    </div>
+
+    <!-- 신부측 -->
+    <p class="acc-group-title">신부 측</p>
+    <div class="acc-row">
+      <div class="acc-card-sm">
+        <p class="acc-role">신부</p>
+        <p class="acc-name">음소라</p>
+        <p class="acc-bank">은행명 · 예금주명</p>
+        <p class="acc-num">000 - 0000 - 000000</p>
+        <button class="copy-btn" onclick="copyNum(this,'000-0000-000000')">복사하기</button>
+      </div>
+      <div class="acc-card-sm memorial">
+        <!-- 국화꽃 아이콘 -->
+        <svg class="chrysanthemum-sm" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="4" fill="#d4c8a8"/>
+          <ellipse cx="14" cy="5.5" rx="2.8" ry="4.5" fill="#eae2c8" opacity="0.9"/>
+          <ellipse cx="14" cy="22.5" rx="2.8" ry="4.5" fill="#eae2c8" opacity="0.9"/>
+          <ellipse cx="5.5" cy="14" rx="4.5" ry="2.8" fill="#e2dac0" opacity="0.85"/>
+          <ellipse cx="22.5" cy="14" rx="4.5" ry="2.8" fill="#e2dac0" opacity="0.85"/>
+          <ellipse cx="7.5" cy="7.5" rx="2.8" ry="4.5" fill="#eae2c8" opacity="0.8" transform="rotate(45 7.5 7.5)"/>
+          <ellipse cx="20.5" cy="7.5" rx="2.8" ry="4.5" fill="#eae2c8" opacity="0.8" transform="rotate(-45 20.5 7.5)"/>
+          <ellipse cx="7.5" cy="20.5" rx="2.8" ry="4.5" fill="#e2dac0" opacity="0.8" transform="rotate(-45 7.5 20.5)"/>
+          <ellipse cx="20.5" cy="20.5" rx="2.8" ry="4.5" fill="#e2dac0" opacity="0.8" transform="rotate(45 20.5 20.5)"/>
+          <circle cx="14" cy="14" r="3.2" fill="#c8b87a"/>
+          <circle cx="14" cy="14" r="1.5" fill="#ddd0a0"/>
+        </svg>
+        <p class="acc-role memorial-role">故 아버지</p>
+        <p class="acc-name">음영태</p>
+        <p class="acc-bank" style="color:#b0a890;font-style:italic;">삼가 고인의 명복을 빕니다</p>
+        <p class="acc-num" style="font-size:12px;color:#b0a890;">—</p>
+      </div>
+      <div class="acc-card-sm">
+        <p class="acc-role">어머니</p>
+        <p class="acc-name">정연화</p>
+        <p class="acc-bank">은행명 · 예금주명</p>
+        <p class="acc-num">000 - 0000 - 000000</p>
+        <button class="copy-btn" onclick="copyNum(this,'000-0000-000000')">복사하기</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 푸터 -->
+<footer>
+  <p class="footer-script">최효림 ♡ 음소라</p>
+  <p class="footer-sub">December 5 · 2026 · 1:30 PM</p>
+</footer>
+
+<script>
+// 배경음악 자동재생
+const bgm = document.getElementById('bgm');
+const musicBtn = document.getElementById('musicBtn');
+const musicLabel = document.getElementById('musicLabel');
+
+function toggleMusic() {
+  if (bgm.paused) {
+    bgm.play();
+    musicBtn.classList.add('playing');
+  } else {
+    bgm.pause();
+    musicBtn.classList.remove('playing');
+  }
+}
+
+// 라벨 툴팁
+musicBtn.addEventListener('mouseenter', () => musicLabel.classList.add('show'));
+musicBtn.addEventListener('mouseleave', () => musicLabel.classList.remove('show'));
+
+// 페이지 로드 후 자동재생 시도 (브라우저 정책상 사용자 인터랙션 후 재생됨)
+function tryAutoplay() {
+  bgm.volume = 0.4;
+  bgm.play().then(() => {
+    musicBtn.classList.add('playing');
+    // 라벨 잠깐 보여주기
+    musicLabel.classList.add('show');
+    setTimeout(() => musicLabel.classList.remove('show'), 2500);
+  }).catch(() => {
+    // 자동재생 차단된 경우 - 첫 클릭 시 재생
+    const startOnClick = () => {
+      bgm.play().then(() => { musicBtn.classList.add('playing'); });
+      document.removeEventListener('click', startOnClick);
+    };
+    document.addEventListener('click', startOnClick);
+  });
+}
+// 인트로 오버레이가 사라진 후 재생
+setTimeout(tryAutoplay, 2500);
+
+// 눈 내리기
+const canvas = document.getElementById('snow-canvas');
+const ctx = canvas.getContext('2d');
+let flakes = [];
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+for (let i = 0; i < 90; i++) {
+  flakes.push({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    r: 1.2 + Math.random() * 3.5,
+    speed: 0.4 + Math.random() * 1.2,
+    drift: (Math.random() - 0.5) * 0.5,
+    opacity: 0.15 + Math.random() * 0.5,
+    sway: Math.random() * Math.PI * 2,
+    swaySpeed: 0.005 + Math.random() * 0.015,
+  });
+}
+function drawSnow() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  flakes.forEach(f => {
+    f.sway += f.swaySpeed;
+    f.x += Math.sin(f.sway) * 0.6 + f.drift;
+    f.y += f.speed;
+    if (f.y > canvas.height + 10) { f.y = -10; f.x = Math.random() * canvas.width; }
+    if (f.x > canvas.width) f.x = 0;
+    if (f.x < 0) f.x = canvas.width;
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${f.opacity})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(drawSnow);
+}
+drawSnow();
+
+// D-day
+function tick() {
+  const target = new Date('2026-12-05T13:30:00');
+  const diff = target - new Date();
+  if (diff <= 0) { ['d-d','d-h','d-m','d-s'].forEach(id => document.getElementById(id).textContent='00'); return; }
+  const p = n => String(n).padStart(2,'0');
+  document.getElementById('d-d').textContent = p(Math.floor(diff/86400000));
+  document.getElementById('d-h').textContent = p(Math.floor((diff%86400000)/3600000));
+  document.getElementById('d-m').textContent = p(Math.floor((diff%3600000)/60000));
+  document.getElementById('d-s').textContent = p(Math.floor((diff%60000)/1000));
+}
+tick(); setInterval(tick, 1000);
+
+// 계좌 복사
+function copyNum(btn, num) {
+  navigator.clipboard.writeText(num.replace(/-/g,'')).then(() => {
+    btn.textContent = '✓ 복사됨'; btn.classList.add('done');
+    setTimeout(() => { btn.textContent = '복사하기'; btn.classList.remove('done'); }, 2000);
+  });
+}
+
+// 스크롤 reveal
+const io = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
