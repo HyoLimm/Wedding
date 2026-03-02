@@ -474,8 +474,19 @@ footer::before { content: ''; position: absolute; inset: 0; background: url("dat
   </div>
 
   <!-- 라이트박스 -->
-  <div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;align-items:center;justify-content:center;cursor:pointer;" onclick="closeLightbox()">
-    <img id="lightbox-img" src="" style="max-width:90vw;max-height:90vh;border-radius:8px;object-fit:contain;">
+  <div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:2000;align-items:center;justify-content:center;flex-direction:column;">
+    <!-- 닫기 -->
+    <button onclick="closeLightbox()" style="position:absolute;top:20px;right:24px;background:none;border:none;color:white;font-size:28px;cursor:pointer;z-index:10;opacity:0.7;">✕</button>
+    <!-- 카운터 -->
+    <div id="lb-counter" style="position:absolute;top:24px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,0.5);font-size:12px;letter-spacing:0.3em;font-family:'Cormorant Garamond',serif;"></div>
+    <!-- 이전 -->
+    <button onclick="lbMove(-1)" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:50%;width:44px;height:44px;color:white;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">‹</button>
+    <!-- 이미지 -->
+    <img id="lightbox-img" src="" style="max-width:88vw;max-height:82vh;border-radius:8px;object-fit:contain;user-select:none;transition:opacity 0.2s ease;">
+    <!-- 다음 -->
+    <button onclick="lbMove(1)" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:50%;width:44px;height:44px;color:white;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">›</button>
+    <!-- 썸네일 도트 -->
+    <div id="lb-dots" style="position:absolute;bottom:24px;display:flex;gap:8px;"></div>
   </div>
 </section>
 
@@ -702,20 +713,72 @@ function copyNum(btn, num) {
   });
 }
 
-// 갤러리 라이트박스
-document.querySelectorAll('.g-item img').forEach(img => {
-  img.style.cursor = 'pointer';
-  img.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const lb = document.getElementById('lightbox');
-    document.getElementById('lightbox-img').src = img.src;
-    lb.style.display = 'flex';
+// 갤러리 라이트박스 (스와이프 + 화살표)
+const lbImgs = Array.from(document.querySelectorAll('.g-item img')).map(i => i.src);
+let lbIndex = 0;
+let lbTouchStartX = 0;
+
+function openLightbox(idx) {
+  lbIndex = idx;
+  const lb = document.getElementById('lightbox');
+  lb.style.display = 'flex';
+  lbRender();
+
+  // 스와이프 이벤트
+  lb.addEventListener('touchstart', e => { lbTouchStartX = e.touches[0].clientX; }, { passive: true });
+  lb.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - lbTouchStartX;
+    if (Math.abs(dx) > 50) lbMove(dx < 0 ? 1 : -1);
   });
-});
+}
+
+function lbRender() {
+  const img = document.getElementById('lightbox-img');
+  img.style.opacity = '0';
+  setTimeout(() => {
+    img.src = lbImgs[lbIndex];
+    img.style.opacity = '1';
+  }, 100);
+
+  // 카운터
+  document.getElementById('lb-counter').textContent = `${lbIndex + 1} / ${lbImgs.length}`;
+
+  // 도트
+  const dotsEl = document.getElementById('lb-dots');
+  dotsEl.innerHTML = lbImgs.map((_, i) =>
+    `<div onclick="lbGoto(${i})" style="width:${i===lbIndex?'20px':'8px'};height:8px;border-radius:4px;background:${i===lbIndex?'white':'rgba(255,255,255,0.35)'};cursor:pointer;transition:all 0.3s ease;"></div>`
+  ).join('');
+}
+
+function lbMove(dir) {
+  lbIndex = (lbIndex + dir + lbImgs.length) % lbImgs.length;
+  lbRender();
+}
+function lbGoto(idx) { lbIndex = idx; lbRender(); }
+
 function closeLightbox() {
   document.getElementById('lightbox').style.display = 'none';
 }
-document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+
+// 갤러리 이미지에 클릭 이벤트
+document.querySelectorAll('.g-item img').forEach((img, i) => {
+  img.style.cursor = 'pointer';
+  img.addEventListener('click', () => openLightbox(i));
+});
+
+// 키보드
+document.addEventListener('keydown', e => {
+  if (document.getElementById('lightbox').style.display === 'flex') {
+    if (e.key === 'ArrowRight') lbMove(1);
+    else if (e.key === 'ArrowLeft') lbMove(-1);
+    else if (e.key === 'Escape') closeLightbox();
+  }
+});
+
+// 배경 클릭시 닫기
+document.getElementById('lightbox').addEventListener('click', e => {
+  if (e.target === document.getElementById('lightbox')) closeLightbox();
+});
 
 // 스크롤 reveal
 const io = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.12 });
